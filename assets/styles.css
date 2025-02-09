@@ -1,0 +1,152 @@
+/* Reset some basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Container for full-page scroll snapping */
+.container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+/* Each section takes up the full viewport height.
+   Added perspective for 3D transforms on title animations */
+.page {
+  height: 100vh;
+  position: relative;
+  scroll-snap-align: start;
+  perspective: 1000px;
+}
+
+/* Centered content container for each page's content (<p>) */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+/* Background colors for pages */
+#page1 {
+  background-color: #ffffff;
+}
+#page2 {
+  background-color: rgb(56, 59, 61);
+  color: #fff;
+}
+#page3 {
+  background-color: rgb(104, 137, 159);
+  color: #fff;
+}
+#page4 {
+  background-color: #ffffff;
+  color: #000;
+}
+
+/* Animated tile (logo image) styling with a drop-shadow fade */
+.tile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateX(150%) rotate(30deg);
+  opacity: 0;
+  animation: slideTile 1s forwards ease-out;
+  transition: filter 1.5s ease-out;
+  width: 200px;
+  height: auto;
+}
+
+@keyframes slideTile {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(150%) rotate(30deg);
+    filter: drop-shadow(0 15px 10px rgba(0, 0, 0, 0.5));
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateX(-10px) rotate(-5deg);
+    filter: drop-shadow(0 15px 10px rgba(0, 0, 0, 0.3));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateX(0) rotate(0deg);
+    /* Final drop-shadow matches the persistent title styling */
+    filter: drop-shadow(0 15px 10px rgba(0, 0, 0, 0.5));
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 600px) {
+  .tile {
+    width: 150px;
+  }
+}
+
+/* Persistent title styling: fixed at top left */
+.persistent-title {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 100;
+  /* No text-shadow for a cleaner look */
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transform: rotateX(0deg);
+  opacity: 1;
+}
+
+/* The roll-out class rotates the title (rolls it away) */
+.roll-out {
+  transform: rotateX(90deg);
+  opacity: 0;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+/* Navigation menu styles (positioned exactly where the persistent title is) */
+.page-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  display: none;
+}
+
+.page-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Menu items styled simply with reduced spacing */
+.page-menu li {
+  font-size: 1.8rem;
+  margin: 2px 0;
+  cursor: pointer;
+  color: #262626;
+}
+
+.page-menu li:hover {
+  text-shadow: 0 10px 10px rgba(0, 0, 0, 0.298);
+}
+
+/* Bold the active menu item */
+.page-menu li.active {
+  font-weight: bold;
+}
