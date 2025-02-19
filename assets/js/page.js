@@ -3,7 +3,7 @@ function updatePersistentTitle(newTitle) {
   const titleEl = document.getElementById('persistentTitle');
   const currentTitle = titleEl.dataset.currentTitle || "";
   
-  // Determine text color: if the new title is "Endorsements" or "Our Work", use white; otherwise, black.
+  // Determine text color: if the new title is "Endorsements" or "Our Work", use white; otherwise, use a dark color.
   const newColor = (newTitle === "Endorsements" || newTitle === "Our Work") ? "#fff" : "#262626";
   titleEl.style.color = newColor;
   document.querySelectorAll('.page-menu li').forEach(li => {
@@ -19,7 +19,6 @@ function updatePersistentTitle(newTitle) {
 }
 
 // Toggle the navigation menu when the persistent title is clicked.
-// When the menu is opened, hide the persistent title; when closed, show it.
 document.getElementById('persistentTitle').addEventListener('click', function(e) {
   e.stopPropagation();
   const menu = document.getElementById('pageMenu');
@@ -58,10 +57,13 @@ document.querySelectorAll('.page-menu li').forEach(item => {
   });
 });
 
-// Use an IntersectionObserver that updates as soon as a section is nearly fully in view (95%).
+// Get the scrollable container element.
+const containerEl = document.querySelector('.container');
+
+// Use an IntersectionObserver that uses the scrolling container as the root.
+// This ensures that on mobile (and desktop) the title updates when a section is nearly fully in view.
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    // If at least 95% of the section is visible, update the persistent title.
     if (entry.isIntersecting && entry.intersectionRatio >= 0.95) {
       const newTitle = entry.target.getAttribute('data-title');
       updatePersistentTitle(newTitle);
@@ -76,7 +78,7 @@ const observer = new IntersectionObserver((entries) => {
       });
     }
   });
-}, { root: null, threshold: 0.95 });
+}, { root: containerEl, threshold: 0.95 });
 
 // Observe each page section.
 document.querySelectorAll('.page').forEach(section => {
