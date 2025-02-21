@@ -164,111 +164,154 @@ html, body {
    Page 3: About Spencer Ceramics
 ================================= */
 #page3 {
-  /* Dark background to match your screenshot */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   background-color: #303336; 
   color: #f1f1f1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 1rem;
+  box-sizing: border-box;
 }
 
-/* Main container for the about section */
 .about-container {
+  /* Reduced from 1200px to 900px so it’s less wide on desktop */
   max-width: 900px;
   width: 100%;
-  padding: 2rem;
-  background-color: #3a3b3d; /* Slightly lighter than the page background */
-  border-radius: 8px;
+  margin: auto;
 }
 
-/* Heading style */
-.about-container h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-/* Paragraph styling */
-.about-container p {
-  line-height: 1.5;
-  margin-bottom: 1rem;
-  color: #cccccc;
-}
-
-/* Bottom section: Photo + Contact info */
-.about-bottom {
+.desktop-flex {
   display: flex;
-  flex-wrap: wrap; /* Wrap on small screens */
-  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* Columns */
+.left-col {
+  order: 1;
+  flex: 0 0 70%;
+  padding-right: 1rem;
+}
+.right-col {
+  order: 2;
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-top: 2rem;
+  text-align: center;
+  align-self: center;
+}
+
+/* Indent paragraphs so the heading is slightly more to the left */
+.left-col p {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* Photo & name/title */
-.about-person {
-  display: flex;
-  align-items: center;
-}
-
 .about-person img {
-  width: 80px;   /* Adjust as needed */
-  height: 80px;  /* Keep it square */
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .person-info strong {
   font-size: 1.1rem;
   color: #ffffff;
+  text-align: right;
 }
 
-/* Contact info */
+/* Divider */
+.divider {
+  order: 3;
+  width: 100%;
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #555;
+}
+
+/* Contact info: bigger icons & text */
 .contact-info {
+  order: 4;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-/* Each contact item row: icon + text */
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem; /* Slightly bigger gap */
 }
 
 .contact-item .icon {
-  width: 24px;
-  height: 24px;
+  /* Increase icon size */
+  width: 32px;
+  height: 32px;
   object-fit: contain;
-  /* Optional: invert to make the icon white on dark background, 
-     if the icon is black by default. Adjust as needed. */
 }
 
 .contact-item span {
-  font-size: 1rem;
-  color: #f1f1f1;
+  /* Increase text size */
+  font-size: 1.2rem;
 }
 
-/* ========== Responsive Tweaks ========== */
-@media (max-width: 600px) {
-  .about-container {
-    padding: 1rem;
+.contact-item a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;   /* Match your existing spacing */
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit color from parent (white on dark background) */
+}
+
+/* ===============================
+   Mobile Responsiveness
+================================= */
+@media (max-width: 768px) {
+  .left-col {
+    order: 1;
+    flex: 1 1 100%;
+    padding-right: 0;
   }
-  
-  .about-bottom {
-    flex-direction: column; /* stack photo & contact vertically on small screens */
-    align-items: flex-start;
+  .divider {
+    order: 2;
+    margin: 1rem 0;
   }
-  
-  .about-person img {
-    width: 60px;
-    height: 60px;
+  .right-col {
+    flex: 0 0 auto;           /* No forced width */
+    flex-direction: row;      /* Text + image in a row */
+    align-items: center;      /* Vertically center text & image */
+    justify-content: center;  /* Center the pair horizontally */
+    margin: 0 auto;           /* Center the block within the parent */
+    text-align: left;         /* Keep the text left-aligned */
   }
-  
-  .about-person {
-    margin-bottom: 1rem;
+  /* Image on the right */
+  .right-col img {
+    order: 2;
+    margin-bottom: 0;
+    margin-left: 1rem;  /* Gap between text and image */
+  }
+  /* Text on the left, centered vertically next to the image */
+  .person-info {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .person-info {
+    order: 1; /* Text on the left */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center the text relative to the image */
+  }
+  .contact-info {
+    order: 4;
+    padding-top: 20px;
   }
 }
 
@@ -282,9 +325,9 @@ html, body {
 
 h1 {
   font-family: 'Source Serif Pro', Georgia, serif;
-  font-size: 4em;
+  font-size: 2.4em;
   font-weight: 700;
-  margin: 0.1em;
+  margin-bottom: 1rem;
 }
 
 h3 {

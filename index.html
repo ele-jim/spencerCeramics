@@ -38,44 +38,55 @@
       <!-- Content for page 2 can be added here later -->
     </section>
     
-    <!-- Page 3: About Spencer Ceramics -->
-    <section class="page" id="page3">
-      <div class="about-container">
-        <h1>About<br>Spencer Ceramics</h1>
-        <p>
-          Hi, I'm Lee Spencer, the owner of Spencer Ceramics. I started this business in 2018 with a passion for delivering high-quality tiling work, and since then, I've had the pleasure of working on a wide range of projects across Northampton and beyond.
-        </p>
-        <p>
-          From bathrooms and kitchens to swimming pools and commercial spaces, I've tiled it all. Whether it's a small domestic house or a large-scale commercial project, I take pride in every detail, ensuring a flawless finish that stands the test of time.
-        </p>
-        <p>
-          I work with all types of tiles, including ceramic, porcelain, natural stone, and mosaics, and I'm always happy to offer advice on the best materials and layouts for your space. My goal is simple: to provide a professional, reliable, and hassle-free tiling service that leaves you with a result you'll love.
-        </p>
+   <!-- Page 3: About Spencer Ceramics -->
+  <!-- Page 3: About Spencer Ceramics -->
+  <section class="page" id="page3">
+    <div class="about-container">
+      <div class="desktop-flex">
+        <!-- Left Col: Title & Paragraphs -->
+        <div class="left-col">
+          <h1>About<br>Spencer Ceramics</h1>
+          <p>
+            Hi, I'm Lee Spencer, the owner of Spencer Ceramics. I started this business in 2018 with a passion for delivering high-quality tiling work, and since then, I've had the pleasure of working on a wide range of projects across Northampton and beyond.
+          </p>
+          <p>
+            From bathrooms and kitchens to swimming pools and commercial spaces, I've tiled it all. Whether it's a small domestic house or a large-scale commercial project, I take pride in every detail, ensuring a flawless finish that stands the test of time.
+          </p>
+          <p>
+            I work with all types of tiles, including ceramic, porcelain, natural stone, and mosaics, and I'm always happy to offer advice on the best materials and layouts for your space. My goal is simple: to provide a professional, reliable, and hassle-free tiling service that leaves you with a result you'll love.
+          </p>
+        </div>
         
-        <div class="about-bottom">
-          <!-- Photo & Name/Title -->
-          <div class="about-person">
-            <img src="images/lee.png" alt="Lee Spencer">
-            <div class="person-info">
-              <strong>Lee Spencer</strong><br>
-              <span>Owner | No.1 Employee</span>
-            </div>
-          </div>
-          
-          <!-- Contact Info -->
-          <div class="contact-info">
-            <div class="contact-item">
-              <img src="images/icons/phone.png" alt="Phone icon" class="icon">
-              <span>+44 7123 456789</span>
-            </div>
-            <div class="contact-item">
-              <img src="/images/icons/email.webp" alt="Email icon" class="icon">
-              <span>lee@spencerceramics.uk</span>
-            </div>
+        <!-- Right Col: Photo & Name/Title -->
+        <div class="right-col about-person">
+          <img src="images/lee.png" alt="Lee Spencer">
+          <div class="person-info">
+            <strong>Lee Spencer</strong><br>
+            <span>Owner | No.1 Employee</span>
           </div>
         </div>
+        
+        <!-- Divider (repositioned via flex-order on mobile) -->
+        <hr class="divider" />
+        
+        <!-- Contact Info (centered) -->
+        <div class="contact-info">
+          <div class="contact-item">
+            <a href="tel:+447123456789">
+              <img src="images/icons/phone.png" alt="Phone Icon" class="icon">
+              <span>+44 7123 456789</span>
+            </a>
+          </div>
+          <div class="contact-item">
+            <a href="mailto:lee@spencerceramics.uk">
+              <img src="images/icons/email.webp" alt="Email Icon" class="icon">
+              <span>lee@spencerceramics.uk</span>
+            </a>
+          </div>
+        </div>        
       </div>
-    </section>
+    </div>
+  </section>
   </main>
 </body>
 </html>
