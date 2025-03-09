@@ -1,48 +1,86 @@
+// Global object to record testimonial positions (for staggering testimonials)
+const testimonialPositions = {};
+
+// Global helper functions to pause/resume all rows
+function pauseAllRows() {
+  document.querySelectorAll('.scroll-track').forEach(track => {
+    const computedStyle = window.getComputedStyle(track);
+    const matrix = new DOMMatrixReadOnly(computedStyle.transform);
+    const currentX = matrix.m41;
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${currentX}px)`;
+    track.dataset.initialOffset = currentX;
+  });
+}
+
+function resumeAllRows() {
+  document.querySelectorAll('.scroll-track').forEach(track => {
+    const computedStyle = window.getComputedStyle(track);
+    const matrix = new DOMMatrixReadOnly(computedStyle.transform);
+    const currentX = matrix.m41;
+    track.style.setProperty('--start-offset', `${currentX}px`);
+    track.style.animation = 'scrollLeft 30s linear infinite';
+  });
+}
+
+// Expose these functions globally for clickable-image.js to use
+window.pauseAllRows = pauseAllRows;
+window.resumeAllRows = resumeAllRows;
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Fetch the gallery JSON data
+  const scrollContainer = document.querySelector('.scroll-container');
+  scrollContainer.innerHTML = '<div class="loading-indicator">Loading gallery...</div>';
+  
   fetch('/images/gallery/gallery.json')
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (!response.ok) throw new Error('Network response was not ok');
       return response.json();
     })
     .then(data => {
-      // Build the gallery with the JSON data
+      scrollContainer.innerHTML = '';
       buildGallery(data);
+      initializeManualDrag();
       
-      // Initialize scrolling behavior after gallery is built
-      initializeScrollBehavior();
-      
-      // Set staggered start positions after images load
-      setTimeout(setStaggeredStart, 100);
+      const imagesLoaded = new Promise(resolve => {
+        const images = document.querySelectorAll('.scroll-item img');
+        let loadedCount = 0;
+        if (images.length === 0) { resolve(); return; }
+        images.forEach(img => {
+          if (img.complete) {
+            loadedCount++;
+            if (loadedCount === images.length) resolve();
+          } else {
+            img.addEventListener('load', () => {
+              loadedCount++;
+              if (loadedCount === images.length) resolve();
+            });
+            img.addEventListener('error', () => {
+              loadedCount++;
+              if (loadedCount === images.length) resolve();
+            });
+          }
+        });
+      });
+      imagesLoaded.then(setStaggeredStart);
     })
     .catch(error => {
-      console.error('There was a problem fetching the gallery data:', error);
+      console.error('Error loading gallery data:', error);
+      scrollContainer.innerHTML = '<div class="loading-indicator">Error loading gallery. Please try again later.</div>';
     });
   
   function buildGallery(galleryData) {
-    const scrollContainer = document.querySelector('.scroll-container');
-    scrollContainer.innerHTML = ''; // Clear any placeholder content
-    
-    // Create the specified number of rows
-    const rowCount = 5; // Adjust as needed
-    
+    const rowCount = 5;
     for (let i = 0; i < rowCount; i++) {
-      // Create a row
       const row = document.createElement('div');
       row.className = 'scroll-row';
+      row.dataset.rowIndex = i;
       
-      // Determine direction based on row index
-      const isEven = i % 2 === 1;
+      const track = document.createElement('div');
+      track.className = 'scroll-track';
       
-      // Get a subset of images for this row
-      const rowImages = getImagesForRow(galleryData, i, isEven);
-      
-      // Add images to the row
-      rowImages.forEach(item => {
+      const rowItems = getImagesForRow(galleryData, i);
+      rowItems.forEach(item => {
         if (item.type === 'testimonial') {
-          // Create testimonial
           const testimonial = document.createElement('div');
           testimonial.className = 'testimonial';
           testimonial.innerHTML = `
@@ -50,167 +88,139 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>- ${item.author}</p>
             <div class="testimonial-stars">${generateStars(item.rating)}</div>
           `;
-          row.appendChild(testimonial);
+          track.appendChild(testimonial);
         } else {
-          // Create image item
           const imageItem = document.createElement('div');
           imageItem.className = 'scroll-item';
-          
           const img = document.createElement('img');
           img.src = item.path;
           img.alt = item.alt || 'Gallery image';
-          
           imageItem.appendChild(img);
-          row.appendChild(imageItem);
+          track.appendChild(imageItem);
         }
       });
       
-      // Add duplicate items for seamless scrolling
-      const originalItems = Array.from(row.children);
-      originalItems.forEach(item => {
-        const clone = item.cloneNode(true);
-        row.appendChild(clone);
-      });
-      
+      // Duplicate for seamless looping
+      track.innerHTML += track.innerHTML;
+      row.appendChild(track);
       scrollContainer.appendChild(row);
     }
   }
   
-  function getImagesForRow(galleryData, rowIndex, isEven) {
+  function getImagesForRow(galleryData, rowIndex) {
     const { images, testimonials } = galleryData;
-    const itemsPerRow = 5; // Adjust as needed
-    
-    // Create a mix of images and possibly testimonials
+    const itemsPerRow = 5;
     let rowItems = [];
-    
-    // Use different sections of the images array for different rows
     const startIdx = (rowIndex * itemsPerRow) % images.length;
-    
     for (let i = 0; i < itemsPerRow; i++) {
       const imageIndex = (startIdx + i) % images.length;
       rowItems.push(images[imageIndex]);
     }
-    
-    // Add testimonials with spacing constraints (not adjacent)
-    if (testimonials && testimonials.length > 0) {
-      // Only add testimonial to some rows
-      if (rowIndex % 2 === 0 && rowIndex < testimonials.length) {
-        // Place testimonial at a random position that's not at the edge
-        const position = Math.floor(Math.random() * (itemsPerRow - 2)) + 1;
-        
-        // Remove the image at this position and insert testimonial
-        rowItems.splice(position, 1, {
-          type: 'testimonial',
-          ...testimonials[rowIndex % testimonials.length]
-        });
+    if (testimonials && testimonials.length > 0 && rowIndex % 2 === 0) {
+      let availablePositions = [];
+      for (let pos = 1; pos < itemsPerRow - 1; pos++) {
+        availablePositions.push(pos);
       }
+      if (testimonialPositions[rowIndex - 2] !== undefined) {
+        availablePositions = availablePositions.filter(pos => pos !== testimonialPositions[rowIndex - 2]);
+      }
+      const chosenPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+      testimonialPositions[rowIndex] = chosenPos;
+      rowItems.splice(chosenPos, 1, {
+        type: 'testimonial',
+        ...testimonials[rowIndex % testimonials.length]
+      });
     }
-    
-    // For even rows, reverse the order to create visual variety
-    return isEven ? rowItems.reverse() : rowItems;
+    return rowItems;
   }
   
   function generateStars(rating) {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-    
     let stars = '';
     for (let i = 0; i < fullStars; i++) stars += '★';
     if (halfStar) stars += '☆';
     for (let i = 0; i < emptyStars; i++) stars += '☆';
-    
     return stars;
   }
   
-  function initializeScrollBehavior() {
-    const scrollRows = document.querySelectorAll('.scroll-row');
-    
-    // Handle manual scrolling
-    scrollRows.forEach(row => {
-      let pauseTimer;
-      let isDragging = false;
-      let startX;
-      let scrollLeft;
-      
-      // Start dragging
-      row.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.pageX - row.offsetLeft;
-        scrollLeft = row.scrollLeft;
-        row.classList.add('paused');
-        clearTimeout(pauseTimer);
-      });
-      
-      // Stop dragging
-      window.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          
-          // Resume animation after 2 seconds
-          pauseTimer = setTimeout(() => {
-            row.classList.remove('paused');
-          }, 2000);
+  function setStaggeredStart() {
+    const tracks = document.querySelectorAll('.scroll-row .scroll-track');
+    tracks.forEach(track => {
+      const rowIndex = parseInt(track.parentElement.dataset.rowIndex);
+      const firstItem = track.querySelector('.scroll-item, .testimonial');
+      if (firstItem) {
+        const itemWidth = firstItem.offsetWidth + 10; // margin adjustment: 0 5px each side
+        if (rowIndex % 2 === 1) {
+          track.style.setProperty('--start-offset', `-${itemWidth / 2}px`);
+        } else {
+          track.style.setProperty('--start-offset', `0px`);
         }
-      });
-      
-      // Handle dragging motion
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - row.offsetLeft;
-        const walk = (x - startX) * 2; // Scroll speed multiplier
-        row.scrollLeft = scrollLeft - walk;
-      });
-      
-      // Handle touch events for mobile
-      row.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startX = e.touches[0].pageX - row.offsetLeft;
-        scrollLeft = row.scrollLeft;
-        row.classList.add('paused');
-        clearTimeout(pauseTimer);
-      });
-      
-      window.addEventListener('touchend', () => {
-        if (isDragging) {
-          isDragging = false;
-          
-          // Resume animation after 2 seconds
-          pauseTimer = setTimeout(() => {
-            row.classList.remove('paused');
-          }, 2000);
-        }
-      });
-      
-      window.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const x = e.touches[0].pageX - row.offsetLeft;
-        const walk = (x - startX) * 2;
-        row.scrollLeft = scrollLeft - walk;
-      });
+      }
+      const scrollDistance = track.scrollWidth / 2;
+      track.style.setProperty('--scroll-distance', `${scrollDistance}px`);
     });
   }
   
-  function setStaggeredStart() {
-    const oddRows = document.querySelectorAll('.scroll-row:nth-child(odd)');
-    const evenRows = document.querySelectorAll('.scroll-row:nth-child(even)');
-    
-    // For odd rows (1, 3, 5), start with half an image off-screen
-    oddRows.forEach(row => {
-      // Calculate width of first image + margin
-      const firstItem = row.querySelector('.scroll-item');
-      if (firstItem) {
-        const itemWidth = firstItem.offsetWidth + 20; // 20px for margins
-        row.style.transform = `translateX(-${itemWidth / 2}px)`;
-      }
-    });
-    
-    // For even rows (2, 4), start from the middle of sequence
-    evenRows.forEach(row => {
-      if (row.scrollWidth > row.clientWidth) {
-        row.style.transform = `translateX(-${row.scrollWidth / 4}px)`;
-      }
+  // Attach manual drag listeners on each row
+  function initializeManualDrag() {
+    const rows = document.querySelectorAll('.scroll-row');
+    rows.forEach(row => {
+      let startX = 0, initialOffset = 0, isDragging = false;
+      const track = row.querySelector('.scroll-track');
+      
+      row.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        pauseAllRows();
+        isDragging = true;
+        startX = e.pageX;
+        const computedStyle = window.getComputedStyle(track);
+        const matrix = new DOMMatrixReadOnly(computedStyle.transform);
+        initialOffset = matrix.m41;
+      });
+      
+      row.addEventListener('touchstart', (e) => {
+        pauseAllRows();
+        isDragging = true;
+        startX = e.touches[0].pageX;
+        const computedStyle = window.getComputedStyle(track);
+        const matrix = new DOMMatrixReadOnly(computedStyle.transform);
+        initialOffset = matrix.m41;
+      });
+      
+      row.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const delta = e.pageX - startX;
+        track.style.transform = `translateX(${initialOffset + delta}px)`;
+      });
+      
+      row.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const delta = e.touches[0].pageX - startX;
+        track.style.transform = `translateX(${initialOffset + delta}px)`;
+      });
+      
+      row.addEventListener('mouseleave', () => {
+        if (isDragging) {
+          isDragging = false;
+          setTimeout(() => resumeAllRows(), 2000);
+        }
+      });
+      
+      row.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          setTimeout(() => resumeAllRows(), 2000);
+        }
+      });
+      
+      row.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          setTimeout(() => resumeAllRows(), 2000);
+        }
+      });
     });
   }
 });

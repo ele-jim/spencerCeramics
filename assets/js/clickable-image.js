@@ -18,19 +18,25 @@ function initializeModalViewer(options = {}) {
     `;
     document.body.appendChild(modal);
 
-    // Add click-to-close functionality to the modal
+    // Click-to-close functionality for the modal
     modal.addEventListener('click', () => {
         modal.style.display = 'none';
         modal.innerHTML = ''; // Clear modal content
+        if (typeof resumeAllRows === 'function') {
+            resumeAllRows();
+        }
     });
 
-    // Select elements to apply the modal functionality
-    const imageSelector = options.imageSelector || '.gallery-item img, .clickable-event-image';
+    // Only target images in the gallery folder (assuming relative path "images/gallery/")
+    const imageSelector = options.imageSelector || 'img[src^="images/gallery/"]';
     const images = document.querySelectorAll(imageSelector);
 
     images.forEach((img) => {
-        img.style.cursor = 'pointer'; // Indicate clickability
+        img.style.cursor = 'pointer';
         img.addEventListener('click', () => {
+            if (typeof pauseAllRows === 'function') {
+                pauseAllRows();
+            }
             modal.innerHTML = `<img src="${img.src}" alt="${img.alt}" style="max-width: 90%; max-height: 90vh; object-fit: contain;">`;
             modal.style.display = 'flex';
         });
