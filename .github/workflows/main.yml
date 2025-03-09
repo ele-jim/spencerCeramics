@@ -1,0 +1,26 @@
+name: Generate File List
+
+on:
+  push:
+    paths:
+      - 'images/gallery/**'  # Trigger when images in gallery change
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Generate File List
+        run: |
+          ls images/gallery | jq -R -s -c 'split("\n")[:-1]' > images/gallery/gallery.json
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add images/gallery/gallery.json
+          git commit -m "Update gallery.json" || echo "No changes to commit"
+          git push
