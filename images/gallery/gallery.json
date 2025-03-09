@@ -1,16 +1,126 @@
-[
-    "20221023_191801.jpg",
-    "Adv-Tiling-TheBTC-scaled-e1697283472205.webp",
-    "bathroom-ceramic-tiling.webp",
-    "bathroom-installation-ceramic-wall-tiling.jpg",
-    "contemporary-hallway-tiling.jpg",
-    "download.jpeg",
-    "edinburgh-tiling-project-image12.webp",
-    "floor-tiling-00020-500x667.jpg",
-    "Harrogate Hallway Tiler.webp",
-    "images (1).jpeg",
-    "images (2).jpeg",
-    "images.jpeg",
-    "IMG_3375.jpg"
+{
+  "images": [
+    {
+      "path": "images/gallery/20221023_191801.jpg",
+      "alt": "Project showcase image",
+      "tags": ["interior", "modern"]
+    },
+    {
+      "path": "images/gallery/Adv-Tiling-TheBTC-scaled-e1697283472205.webp",
+      "alt": "Contemporary design",
+      "tags": ["exterior", "contemporary"]
+    },
+    {
+      "path": "images/gallery/bathroom-ceramic-tiling.webp",
+      "alt": "Kitchen renovation",
+      "tags": ["interior", "kitchen"]
+    },
+    {
+      "path": "images/gallery/bathroom-installation-ceramic-wall-tiling.jpg",
+      "alt": "Bathroom design",
+      "tags": ["interior", "bathroom"]
+    },
+    {
+      "path": "images/gallery/contemporary-hallway-tiling.jpg",
+      "alt": "Living room concept",
+      "tags": ["interior", "living"]
+    },
+    {
+      "path": "images/gallery/download.jpeg",
+      "alt": "Landscape design",
+      "tags": ["exterior", "landscape"]
+    },
+    {
+      "path": "images/gallery/edinburgh-tiling-project-image12.webp",
+      "alt": "Modern facade",
+      "tags": ["exterior", "modern"]
+    },
+    {
+      "path": "images/gallery/floor-tiling-00020-500x667.jpg",
+      "alt": "Industrial style loft",
+      "tags": ["interior", "industrial"]
+    },
+    {
+      "path": "images/gallery/Harrogate Hallway Tiler.webp",
+      "alt": "Minimalist design",
+      "tags": ["interior", "minimalist"]
+    },
+    {
+      "path": "images/gallery/images (1).jpeg",
+      "alt": "Office space",
+      "tags": ["interior", "office"]
+    },
+    {
+      "path": "images/gallery/images (2).jpeg",
+      "alt": "Outdoor patio",
+      "tags": ["exterior", "patio"]
+    },
+    {
+      "path": "images/gallery/images.jpeg",
+      "alt": "Bedroom redesign",
+      "tags": ["interior", "bedroom"]
+    },
+    {
+      "path": "images/gallery/IMG_3375.jpg",
+      "alt": "Classic architecture",
+      "tags": ["exterior", "classic"]
+    },
+    {
+      "path": "images/gallery/InstagramGridImage.jpg",
+      "alt": "Urban apartment",
+      "tags": ["interior", "urban"]
+    },
+    {
+      "path": "images/gallery/jamie-harris-tiling--e1684409548321.webp",
+      "alt": "Luxury villa",
+      "tags": ["exterior", "luxury"]
+    },
+    {
+      "path": "images/gallery/tiling_slider.jpg",
+      "alt": "Luxury villa",
+      "tags": ["exterior", "luxury"]
+    },
+    {
+      "path": "images/gallery/tiling-adhesive-v0-9yk8up3zl9hc1.jpg",
+      "alt": "Luxury villa",
+      "tags": ["exterior", "luxury"]
+    },
+    {
+      "path": "images/gallery/u36eVYZwF6oL5WwwTFmXMZ-320-80.jpg",
+      "alt": "Luxury villa",
+      "tags": ["exterior", "luxury"]
+    },
+    {
+      "path": "images/gallery/unnamed.jpg",
+      "alt": "Luxury villa",
+      "tags": ["exterior", "luxury"]
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "Amazing service, would recommend to everyone!",
+      "author": "John Smith",
+      "rating": 5
+    },
+    {
+      "quote": "Exceeded all my expectations!",
+      "author": "Sarah Johnson",
+      "rating": 4.5
+    },
+    {
+      "quote": "Transformed our space completely. Couldn't be happier.",
+      "author": "Michael Brown",
+      "rating": 5
+    },
+    {
+      "quote": "Professional, creative, and responsive throughout the project.",
+      "author": "Emma Davis",
+      "rating": 4
+    },
+    {
+      "quote": "Innovative solutions to our complex design challenges.",
+      "author": "Robert Wilson",
+      "rating": 4.5
+    }
   ]
-  
+}
