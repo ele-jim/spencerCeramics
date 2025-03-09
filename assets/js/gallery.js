@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const gallery = document.getElementById('gallery');
-  if (!gallery) return;
+  console.log("gallery.js is running!");
 
-  const totalSlots = 30; // Number of slots (images + text)
-  const testimonials = [
-      { text: "Fantastic craftsmanship!", name: "John Doe", stars: "⭐⭐⭐⭐⭐" },
-      { text: "Highly recommend!", name: "Sarah W.", stars: "⭐⭐⭐⭐⭐" },
-      { text: "Great attention to detail.", name: "Mark T.", stars: "⭐⭐⭐⭐" }
-  ];
+  const gallery = document.getElementById('gallery');
+  if (!gallery) {
+      console.error("Gallery container not found!");
+      return;
+  }
 
   async function fetchGalleryFilenames() {
       try {
           const response = await fetch('images/gallery/gallery.json');
           if (!response.ok) throw new Error(`Failed to fetch gallery.json: ${response.statusText}`);
+          
+          console.log("Successfully fetched gallery.json");
           return await response.json();
       } catch (error) {
           console.error('Error fetching gallery JSON:', error);
@@ -21,36 +21,47 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const filenames = await fetchGalleryFilenames();
+  console.log("Fetched filenames:", filenames);
+
   if (filenames.length === 0) {
+      console.warn("No images found in gallery.json");
       gallery.innerHTML = "<p>No images found.</p>";
       return;
   }
 
   filenames.sort(() => Math.random() - 0.5); // Shuffle images
 
-  for (let i = 0; i < totalSlots; i++) {
-      const div = document.createElement('div');
+  // **Dynamically Calculate Columns & Rows**
+  const isMobile = window.innerWidth < 768;
+  const rowCount = 5; // **Always 5 rows**
+  const columnCount = isMobile ? 3 : 5; // 3 columns for mobile, 5 for desktop
 
-      if (Math.random() > 0.7 && testimonials.length > 0) {
-          // Add a testimonial
-          const testimonial = testimonials.pop();
-          div.className = 'text-slot';
-          div.innerHTML = `<p>"${testimonial.text}"<br><strong>- ${testimonial.name}</strong><br>${testimonial.stars}</p>`;
-      } else {
-          // Add an image
-          const img = document.createElement('img');
-          img.src = `images/gallery/${filenames[i % filenames.length]}`;
-          img.alt = `Gallery image ${i + 1}`;
-          img.loading = 'lazy';
-          div.className = 'image-slot';
-          div.appendChild(img);
-      }
-      
-      gallery.appendChild(div);
+  const totalImagesNeeded = rowCount * columnCount; // **Ensure exactly enough images**
+  while (filenames.length < totalImagesNeeded) {
+      filenames.push(...filenames); // **Duplicate images to fill grid if needed**
   }
 
-  // Clone gallery content for infinite scrolling effect
-  const clone = gallery.cloneNode(true);
-  clone.id = "gallery-clone";
-  document.getElementById('gallery-container').appendChild(clone);
+  gallery.innerHTML = ""; // 🔥 Ensure we clear any old images before adding new ones
+
+  filenames.slice(0, totalImagesNeeded).forEach((file, i) => {
+      const div = document.createElement('div');
+      div.className = 'image-slot';
+
+      // 🔥 **Ensure images start from row 1**
+      const row = Math.floor(i / columnCount) + 1;
+      const column = (i % columnCount) + 1;
+
+      div.style.gridRowStart = row;
+      div.style.gridColumnStart = column;
+
+      const img = document.createElement('img');
+      img.src = `images/gallery/${file}`;
+      img.alt = `Gallery image ${i + 1}`;
+      img.loading = 'lazy';
+
+      div.appendChild(img);
+      gallery.appendChild(div);
+  });
+
+  console.log(`Total Images Added: ${gallery.children.length} (Rows: ${rowCount}, Columns: ${columnCount})`);
 });

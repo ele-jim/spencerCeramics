@@ -163,34 +163,42 @@ html, body {
 /* ===============================
    Page 2: Gallery and Testimonials
 ================================= */
+/* ====== Full-Screen Brick Bond Scrolling Gallery ====== */
 #gallery-container {
-  position: relative;
-  width: 100vw;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#gallery {
   display: flex;
-  gap: 10px;
-  width: max-content;
-  animation: scrollGallery 30s linear infinite;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  padding: 10px; /* 🔥 Add padding to match image gap */
+  margin: 0;
 }
 
-.image-slot, .text-slot {
-  width: 200px;
-  height: 100px;
+/* Brick Bond Grid */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(240px, 1fr)); /* Fixed column width */
+  grid-template-rows: repeat(5, 1fr); /* Always 5 rows */
+  gap: 10px; /* 🔥 Consistent spacing (matches container padding) */
+  width: calc(100vw - 20px); /* 🔥 Account for padding */
+  height: calc(100vh - 20px); /* 🔥 Ensures even padding on top & bottom */
+  align-items: start; /* 🔥 Force content to start from the top */
+}
+
+/* Ensure Every Image Maintains 16:9 Aspect Ratio */
+.image-slot {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #fff;
-  color: #000;
-  text-align: center;
-  font-size: 1rem;
-  padding: 10px;
   border-radius: 5px;
+  overflow: hidden;
 }
 
+/* Ensure Images Fill Blocks */
 .image-slot img {
   width: 100%;
   height: 100%;
@@ -198,27 +206,20 @@ html, body {
   border-radius: 5px;
 }
 
-@keyframes scrollGallery {
-  from {
-      transform: translateX(100%);
-  }
-  to {
-      transform: translateX(-100%);
-  }
+/* 🛠 **Brick Bond Staggering** */
+.image-slot:nth-child(10n + 6),
+.image-slot:nth-child(10n + 7),
+.image-slot:nth-child(10n + 8),
+.image-slot:nth-child(10n + 9),
+.image-slot:nth-child(10n + 10) {
+  transform: translateX(50%);
 }
 
-/* Responsive adjustments */
+/* Mobile: Keep 5 rows, adjust column count */
 @media (max-width: 768px) {
   #gallery {
-      flex-wrap: wrap;
-      height: 5em;
-  }
-}
-
-@media (min-width: 769px) {
-  #gallery {
-      flex-wrap: wrap;
-      height: 3em;
+    grid-template-columns: repeat(3, minmax(160px, 1fr)); /* Mobile: 3 columns */
+    grid-template-rows: repeat(5, 1fr); /* Always 5 rows */
   }
 }
 
