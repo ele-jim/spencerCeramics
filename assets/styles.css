@@ -19,9 +19,10 @@ html, body {
    Container & Pages
 ================================= */
 .container {
-  height: 100vh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(100vh - env(safe-area-inset-bottom));
 }
 
 .page {
@@ -44,7 +45,14 @@ html, body {
   background-color: #ffffff;
 }
 
-/* Page 3 */
+/* Page 2 and Page 3 (with safe-area adjustments) */
+#page2,
+#page3 {
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(100vh - env(safe-area-inset-bottom));
+}
+
+/* Page 3 specific styling */
 #page3 {
   background-color: rgb(56, 59, 61);
   color: #000;
@@ -154,16 +162,16 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10; /* Ensures it's above the wallpaper layers */
+  z-index: 10;
   background-color: #fff;
-  padding: 25px; /* Adds 10px total (5px each side) to the logo's dimensions */
+  padding: 25px;
   display: inline-block;
 }
 
 /* ===============================
    Page 2: Gallery and Testimonials
 ================================= */
-/* ====== Full-Screen Brick Bond Scrolling Gallery ====== */
+/* Full-Screen Brick Bond Scrolling Gallery Container */
 #gallery-container {
   display: flex;
   justify-content: center;
@@ -171,22 +179,21 @@ html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  padding: 10px; /* 🔥 Add padding to match image gap */
+  padding: 10px;
   margin: 0;
 }
 
-/* Brick Bond Grid */
+/* Brick Bond Grid for static gallery view */
 #gallery {
   display: grid;
-  grid-template-columns: repeat(5, minmax(240px, 1fr)); /* Fixed column width */
-  grid-template-rows: repeat(5, 1fr); /* Always 5 rows */
-  gap: 10px; /* 🔥 Consistent spacing (matches container padding) */
-  width: calc(100vw - 20px); /* 🔥 Account for padding */
-  height: calc(100vh - 20px); /* 🔥 Ensures even padding on top & bottom */
-  align-items: start; /* 🔥 Force content to start from the top */
+  grid-template-columns: repeat(5, minmax(240px, 1fr));
+  grid-template-rows: repeat(5, 1fr);
+  gap: 10px;
+  width: calc(100vw - 20px);
+  height: calc(100vh - 20px);
+  align-items: start;
 }
 
-/* Ensure Every Image Maintains 16:9 Aspect Ratio */
 .image-slot {
   width: 100%;
   height: 100%;
@@ -198,7 +205,6 @@ html, body {
   overflow: hidden;
 }
 
-/* Ensure Images Fill Blocks */
 .image-slot img {
   width: 100%;
   height: 100%;
@@ -206,7 +212,7 @@ html, body {
   border-radius: 5px;
 }
 
-/* 🛠 **Brick Bond Staggering** */
+/* Brick Bond Staggering */
 .image-slot:nth-child(10n + 6),
 .image-slot:nth-child(10n + 7),
 .image-slot:nth-child(10n + 8),
@@ -215,18 +221,18 @@ html, body {
   transform: translateX(50%);
 }
 
-/* Mobile: Keep 5 rows, adjust column count */
+/* Mobile adjustments for static gallery view */
 @media (max-width: 768px) {
   #gallery {
-    grid-template-columns: repeat(3, minmax(160px, 1fr)); /* Mobile: 3 columns */
-    grid-template-rows: repeat(5, 1fr); /* Always 5 rows */
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+    grid-template-rows: repeat(5, 1fr);
   }
 }
 
-/* --- Page2 Container --- */
+/* --- Page2 Scrolling Gallery (Dynamic) --- */
 #page2 {
-  padding: 10px 0;  /* gap at top and bottom */
-  height: 100vh;
+  padding: 10px 0;
+  height: calc(100vh - env(safe-area-inset-bottom));
   overflow: hidden;
   position: relative;
   display: flex;
@@ -234,25 +240,20 @@ html, body {
   justify-content: center;
 }
 
-/* Gallery container: stack rows vertically with a gap */
 .scroll-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;  /* vertical gap between rows */
+  gap: 10px;
   width: 100%;
-  /* Ensure the container fills available vertical space minus padding */
   height: calc(100vh - 20px);
 }
 
-/* Each row is sized so that 5 rows + 4 gaps (10px each) + 20px (top/bottom padding) fill the viewport */
 .scroll-row {
-  height: calc((100vh - 60px) / 5);  /* (100vh - (2*10 + 4*10)) / 5 */
+  height: calc((100vh - 60px) / 5);
   position: relative;
   overflow: hidden;
 }
 
-/* The inner track that scrolls continuously.
-   It starts with an offset (for brick staggering) and scrolls by the computed distance */
 .scroll-track {
   display: flex;
   align-items: center;
@@ -260,43 +261,36 @@ html, body {
   animation: scrollLeft 30s linear infinite;
 }
 
-/* Pause animation when parent row is paused */
 .scroll-row.paused .scroll-track {
   animation-play-state: paused;
 }
 
-/* Tiles: size based on the row height while maintaining 16:9 ratio.
-   The width is computed as: rowHeight * (16/9). */
 .scroll-item,
 .testimonial {
   flex: 0 0 auto;
-  margin: 0 5px;  /* equal horizontal gap (total 10px gap between items) */
+  margin: 0 5px;
   height: 100%;
-  width: calc((100vh - 60px) / 5 * (16 / 9));  /* computed from row height */
-  /* Optional: enforce aspect ratio if supported */
+  width: calc((100vh - 60px) / 5 * (16 / 9));
   aspect-ratio: 16 / 9;
 }
 
-/* Image styling: fill container without rounded corners */
 .scroll-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Testimonial styling: no background, centered content */
 .testimonial {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* center horizontally */
+  align-items: center;
   padding: 0 5px;
   color: #fff;
-  text-align: center;  /* center text */
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
-/* Scrolling animation: move from the initial offset to initial offset minus the computed scroll distance */
 @keyframes scrollLeft {
   from {
     transform: translateX(var(--start-offset, 0));
@@ -321,7 +315,6 @@ html, body {
 }
 
 .about-container {
-  /* Reduced from 1200px to 900px so it’s less wide on desktop */
   max-width: 900px;
   width: 100%;
   margin: auto;
@@ -333,7 +326,6 @@ html, body {
   align-items: flex-start;
 }
 
-/* Columns */
 .left-col {
   order: 1;
   flex: 0 0 70%;
@@ -349,13 +341,11 @@ html, body {
   align-self: center;
 }
 
-/* Indent paragraphs so the heading is slightly more to the left */
 .left-col p {
   margin-left: 1rem;
   margin-bottom: 1rem;
 }
 
-/* Photo & name/title */
 .about-person img {
   width: 120px;
   height: 120px;
@@ -370,7 +360,6 @@ html, body {
   text-align: right;
 }
 
-/* Divider */
 .divider {
   order: 3;
   width: 100%;
@@ -379,7 +368,6 @@ html, body {
   border-top: 1px solid #555;
 }
 
-/* Contact info: bigger icons & text */
 .contact-info {
   order: 4;
   width: 100%;
@@ -392,27 +380,25 @@ html, body {
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Slightly bigger gap */
+  gap: 0.75rem;
 }
 
 .contact-item .icon {
-  /* Increase icon size */
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
 .contact-item span {
-  /* Increase text size */
   font-size: 1.2rem;
 }
 
 .contact-item a {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;   /* Match your existing spacing */
-  text-decoration: none; /* Remove underline */
-  color: inherit; /* Inherit color from parent (white on dark background) */
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* ===============================
@@ -429,31 +415,23 @@ html, body {
     margin: 1rem 0;
   }
   .right-col {
-    flex: 0 0 auto;           /* No forced width */
-    flex-direction: row;      /* Text + image in a row */
-    align-items: center;      /* Vertically center text & image */
-    justify-content: center;  /* Center the pair horizontally */
-    margin: 0 auto;           /* Center the block within the parent */
-    text-align: left;         /* Keep the text left-aligned */
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    text-align: left;
   }
-  /* Image on the right */
   .right-col img {
     order: 2;
     margin-bottom: 0;
-    margin-left: 1rem;  /* Gap between text and image */
+    margin-left: 1rem;
   }
-  /* Text on the left, centered vertically next to the image */
   .person-info {
     order: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-  .person-info {
-    order: 1; /* Text on the left */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Vertically center the text relative to the image */
   }
   .contact-info {
     order: 4;
