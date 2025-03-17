@@ -1,7 +1,8 @@
-// Global object to record testimonial positions (for staggering testimonials)
-const testimonialPositions = {};
+/************************************
+ * GLOBALS & HELPER FUNCTIONS
+ ************************************/
+let globalTestimonialAssignments = {};
 
-// Global helper functions to pause/resume all rows
 function pauseAllRows() {
   document.querySelectorAll('.scroll-track').forEach(track => {
     const computedStyle = window.getComputedStyle(track);
@@ -23,14 +24,62 @@ function resumeAllRows() {
   });
 }
 
-// Expose these functions globally for clickable-image.js to use
+// Expose these functions globally
 window.pauseAllRows = pauseAllRows;
 window.resumeAllRows = resumeAllRows;
 
+/************************************
+ * PATTERN-BASED TESTIMONIAL ASSIGNMENT
+ ************************************/
+
+/**
+ * Revised pattern:
+ *   rowPattern = [1, 3, 2, 3]
+ *   colStepPattern = [1, 2, 1, 2]
+ *
+ * - Start at column=0.
+ * - For each testimonial i:
+ *     row = rowPattern[i % rowPattern.length]
+ *     place testimonial at (row, currentCol)
+ *     currentCol += colStepPattern[i % colStepPattern.length]
+ *     if currentCol > 4 => stop.
+ */
+function assignTestimonialsPattern(galleryData) {
+  const rowPattern = [1, 3, 2, 3];     // shifted each row up by 1
+  const colStepPattern = [1, 2, 1, 2];
+  let currentCol = 0;
+
+  // Prepare row assignments for all 5 rows (0..4)
+  const rowAssignments = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+
+  // Go through each testimonial in the order they appear in the JSON
+  for (let i = 0; i < galleryData.testimonials.length; i++) {
+    const row = rowPattern[i % rowPattern.length];
+    // Place testimonial at (row, currentCol)
+    rowAssignments[row].push({
+      testimonial: galleryData.testimonials[i],
+      position: currentCol
+    });
+
+    // Move the column index by the next step
+    currentCol += colStepPattern[i % colStepPattern.length];
+
+    // If we've exceeded the total columns (4 is max), stop placing more
+    if (currentCol > 4) {
+      console.warn(`Column index exceeded (max is 4). Stopping at testimonial #${i+1}.`);
+      break;
+    }
+  }
+  return rowAssignments;
+}
+
+/************************************
+ * MAIN LOGIC
+ ************************************/
 document.addEventListener('DOMContentLoaded', function() {
   const scrollContainer = document.querySelector('.scroll-container');
   scrollContainer.innerHTML = '<div class="loading-indicator">Loading gallery...</div>';
-  
+
   fetch('/images/gallery/gallery.json')
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok');
@@ -38,9 +87,17 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(data => {
       scrollContainer.innerHTML = '';
-      buildGallery(data);
+
+      const rowCount = 5;     // total rows (0..4)
+      const itemsPerRow = 5;  // columns (0..4)
+
+      // Apply our updated pattern-based assignment
+      globalTestimonialAssignments = assignTestimonialsPattern(data);
+
+      buildGallery(data, rowCount, itemsPerRow);
       initializeManualDrag();
-      
+
+      // Wait until images load before calling setStaggeredStart
       const imagesLoaded = new Promise(resolve => {
         const images = document.querySelectorAll('.scroll-item img');
         let loadedCount = 0;
@@ -67,9 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error loading gallery data:', error);
       scrollContainer.innerHTML = '<div class="loading-indicator">Error loading gallery. Please try again later.</div>';
     });
-  
-  function buildGallery(galleryData) {
-    const rowCount = 5;
+
+  /**
+   * Build the gallery by creating 5 rows, each with 5 items.
+   * If testimonials have been assigned to a row, splice them in.
+   */
+  function buildGallery(galleryData, rowCount, itemsPerRow) {
     for (let i = 0; i < rowCount; i++) {
       const row = document.createElement('div');
       row.className = 'scroll-row';
@@ -78,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const track = document.createElement('div');
       track.className = 'scroll-track';
       
-      const rowItems = getImagesForRow(galleryData, i);
+      const rowItems = getImagesForRow(galleryData, i, itemsPerRow);
       rowItems.forEach(item => {
         if (item.type === 'testimonial') {
           const testimonial = document.createElement('div');
@@ -106,34 +166,31 @@ document.addEventListener('DOMContentLoaded', function() {
       scrollContainer.appendChild(row);
     }
   }
-  
-  function getImagesForRow(galleryData, rowIndex) {
-    const { images, testimonials } = galleryData;
-    const itemsPerRow = 5;
+
+  /**
+   * Build an array of 5 image objects for this row,
+   * then splice in any assigned testimonials at the right columns.
+   */
+  function getImagesForRow(galleryData, rowIndex, itemsPerRow) {
+    const { images } = galleryData;
     let rowItems = [];
     const startIdx = (rowIndex * itemsPerRow) % images.length;
     for (let i = 0; i < itemsPerRow; i++) {
       const imageIndex = (startIdx + i) % images.length;
       rowItems.push(images[imageIndex]);
     }
-    if (testimonials && testimonials.length > 0 && rowIndex % 2 === 0) {
-      let availablePositions = [];
-      for (let pos = 1; pos < itemsPerRow - 1; pos++) {
-        availablePositions.push(pos);
-      }
-      if (testimonialPositions[rowIndex - 2] !== undefined) {
-        availablePositions = availablePositions.filter(pos => pos !== testimonialPositions[rowIndex - 2]);
-      }
-      const chosenPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-      testimonialPositions[rowIndex] = chosenPos;
-      rowItems.splice(chosenPos, 1, {
-        type: 'testimonial',
-        ...testimonials[rowIndex % testimonials.length]
+    // Insert testimonials (if any) for this row
+    if (globalTestimonialAssignments[rowIndex]) {
+      globalTestimonialAssignments[rowIndex].forEach(assignment => {
+        rowItems.splice(assignment.position, 1, {
+          type: 'testimonial',
+          ...assignment.testimonial
+        });
       });
     }
     return rowItems;
   }
-  
+
   function generateStars(rating) {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5;
@@ -144,14 +201,14 @@ document.addEventListener('DOMContentLoaded', function() {
     for (let i = 0; i < emptyStars; i++) stars += '☆';
     return stars;
   }
-  
+
   function setStaggeredStart() {
     const tracks = document.querySelectorAll('.scroll-row .scroll-track');
     tracks.forEach(track => {
       const rowIndex = parseInt(track.parentElement.dataset.rowIndex);
       const firstItem = track.querySelector('.scroll-item, .testimonial');
       if (firstItem) {
-        const itemWidth = firstItem.offsetWidth + 10; // margin adjustment: 0 5px each side
+        const itemWidth = firstItem.offsetWidth + 10; 
         if (rowIndex % 2 === 1) {
           track.style.setProperty('--start-offset', `-${itemWidth / 2}px`);
         } else {
@@ -162,65 +219,77 @@ document.addEventListener('DOMContentLoaded', function() {
       track.style.setProperty('--scroll-distance', `${scrollDistance}px`);
     });
   }
-  
-  // Attach manual drag listeners on each row
+
+  // Helper to wrap an offset in [-d, 0] for continuous scrolling
+  function wrapOffset(offset, d) {
+    return ((offset % d) + d) % d - d;
+  }
+
+  // Manual drag logic, unchanged
   function initializeManualDrag() {
-    const rows = document.querySelectorAll('.scroll-row');
-    rows.forEach(row => {
-      let startX = 0, initialOffset = 0, isDragging = false;
-      const track = row.querySelector('.scroll-track');
-      
-      row.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        pauseAllRows();
-        isDragging = true;
-        startX = e.pageX;
-        const computedStyle = window.getComputedStyle(track);
-        const matrix = new DOMMatrixReadOnly(computedStyle.transform);
-        initialOffset = matrix.m41;
+    const container = document.querySelector('.scroll-container');
+    let startX = 0, isDragging = false, resumeTimeout;
+    
+    const dragStart = (pageX) => {
+      clearTimeout(resumeTimeout);
+      pauseAllRows();
+      isDragging = true;
+      startX = pageX;
+    };
+    
+    const dragMove = (pageX) => {
+      if (!isDragging) return;
+      const delta = pageX - startX;
+      document.querySelectorAll('.scroll-track').forEach(track => {
+        const initialOffset = parseFloat(track.dataset.initialOffset) || 0;
+        const scrollDistance = track.scrollWidth / 2;
+        let newOffset = initialOffset + delta;
+        newOffset = wrapOffset(newOffset, scrollDistance);
+        track.style.transform = `translateX(${newOffset}px)`;
       });
-      
-      row.addEventListener('touchstart', (e) => {
-        pauseAllRows();
-        isDragging = true;
-        startX = e.touches[0].pageX;
-        const computedStyle = window.getComputedStyle(track);
-        const matrix = new DOMMatrixReadOnly(computedStyle.transform);
-        initialOffset = matrix.m41;
-      });
-      
-      row.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const delta = e.pageX - startX;
-        track.style.transform = `translateX(${initialOffset + delta}px)`;
-      });
-      
-      row.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const delta = e.touches[0].pageX - startX;
-        track.style.transform = `translateX(${initialOffset + delta}px)`;
-      });
-      
-      row.addEventListener('mouseleave', () => {
-        if (isDragging) {
-          isDragging = false;
-          setTimeout(() => resumeAllRows(), 2000);
-        }
-      });
-      
-      row.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          setTimeout(() => resumeAllRows(), 2000);
-        }
-      });
-      
-      row.addEventListener('touchend', () => {
-        if (isDragging) {
-          isDragging = false;
-          setTimeout(() => resumeAllRows(), 2000);
-        }
-      });
+    };
+    
+    const endDrag = () => {
+      if (isDragging) {
+        isDragging = false;
+        resumeTimeout = setTimeout(() => resumeAllRows(), 2000);
+      }
+    };
+    
+    container.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      dragStart(e.pageX);
     });
+    container.addEventListener('mousemove', (e) => {
+      dragMove(e.pageX);
+    });
+    container.addEventListener('mouseup', endDrag);
+    container.addEventListener('mouseleave', endDrag);
+    
+    container.addEventListener('touchstart', (e) => {
+      dragStart(e.touches[0].pageX);
+    });
+    container.addEventListener('touchmove', (e) => {
+      dragMove(e.touches[0].pageX);
+    });
+    container.addEventListener('touchend', endDrag);
+    
+    container.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        return;
+      }
+      e.preventDefault();
+      clearTimeout(resumeTimeout);
+      pauseAllRows();
+      document.querySelectorAll('.scroll-track').forEach(track => {
+        const initialOffset = parseFloat(track.dataset.initialOffset) || 0;
+        const scrollDistance = track.scrollWidth / 2;
+        let newOffset = initialOffset - e.deltaX;
+        newOffset = wrapOffset(newOffset, scrollDistance);
+        track.style.transform = `translateX(${newOffset}px)`;
+        track.dataset.initialOffset = newOffset;
+      });
+      resumeTimeout = setTimeout(() => resumeAllRows(), 2000);
+    }, { passive: false });
   }
 });
