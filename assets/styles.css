@@ -215,7 +215,7 @@ html, body {
   justify-content: center;
   background-color: #fff;
   border-radius: 5px;
-  overflow: hidden;
+  overflow: visible; /* Allow shadows to be visible */
 }
 
 .image-slot img {
@@ -253,7 +253,7 @@ html, body {
 .scroll-row {
   height: calc((100dvh - 60px) / 5);
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Allow content to show outside the container */
 }
 
 .scroll-track {
@@ -280,6 +280,7 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  box-shadow: 7px 7px 5px rgba(0,0,0,0.5);
 }
 
 .testimonial {
