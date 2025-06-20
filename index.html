@@ -20,29 +20,35 @@
     <section class="page" id="page1">
       <!-- Wallpaper Container -->
       <div class="wallpaper-container">
-        <img src="images/wallpaper/layerZero.png" alt="Wallpaper Layer 0">
-        <img src="images/wallpaper/layerOne.png" alt="Wallpaper Layer 1">
-        <img src="images/wallpaper/layerTwo.png" alt="Wallpaper Layer 2">
-        <img src="images/wallpaper/layerThree.png" alt="Wallpaper Layer 3">
-        <img src="images/wallpaper/layerFour.png" alt="Wallpaper Layer 4">
-        <img src="images/wallpaper/layerFive.png" alt="Wallpaper Layer 5">
+        <!-- SVG will be injected here by wallpaper-animate.js -->
       </div>
       <!-- White Box Behind the Logo -->
       <div class="logo-container">
         <img class="tile" src="images/icons/logo_with_txt.webp" alt="Logo with Text">
       </div>
+      <!-- Gallery/Testimonial Scroll Container -->
+      <div class="scroll-container"></div>
     </section>
     
     <!-- Page 2: Gallery and Testimonials -->
-    <section id="page2" class="page" data-title="Our Work">
-      <div class="scroll-container">
-        <!-- Content will be dynamically generated via JavaScript -->
-        <div class="loading-indicator">Loading gallery...</div>
+    <section id="page2" class="page" data-title="Testimonials">
+      <div class="testimonial-section">
+        <!-- Testimonial cards container -->
+        <div class="testimonial-carousel">
+          <div class="testimonial-cards"></div>
+        </div>
+        
+        <!-- Navigation controls at the bottom -->
+        <div class="navigation-controls">
+          <button class="testimonial-arrow left" aria-label="Previous testimonial">&lt;</button>
+          <span class="dots-separator">...</span>
+          <button class="testimonial-arrow right" aria-label="Next testimonial">&gt;</button>
+        </div>
       </div>
     </section>
     
     <!-- Page 3: About Spencer Ceramics -->
-    <section class="page" id="page3">
+    <section class="page" id="page3" style="background-image: url('images/wallpaper/brick_wall_white.svg'); background-repeat: no-repeat; background-position: top left; background-size: 100% auto;">
       <div class="about-container">
         <div class="desktop-flex">
           <!-- Left Col: Title & Paragraphs -->
@@ -72,7 +78,7 @@
           <hr class="divider" />
           
         <!-- Contact Info (centered) -->
-        <div class="contact-info">
+        <div class="contact-info" style="padding-top: 20px;">
           <div class="contact-item">
             <a href="tel:+447123456789">
               <img src="images/icons/phone.png" alt="Phone Icon" class="icon">
@@ -93,5 +99,7 @@
   <!-- Load JavaScript -->
   <script src="assets/js/gallery.js"></script>
   <script src="assets/js/clickable-image.js"></script>
+  <script src="assets/js/wallpaper-animate.js"></script>
+  <script src="assets/js/page1-prompt.js"></script>
 </body>
 </html>

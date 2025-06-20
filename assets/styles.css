@@ -48,9 +48,8 @@ html, body {
   background-color: #ffffff;
 }
 
-/* Page 2 */
+/* Page 2 - Testimonials Carousel */
 #page2 {
-  /* 10px top gap and bottom gap that adds safe area inset */
   padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
   height: 100dvh;
   overflow: hidden;
@@ -58,7 +57,316 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #f5f5f7;
 }
+.testimonial-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100%;
+  max-width: 100vw;
+  position: relative;
+  gap: 2.5vw;
+  overflow: hidden;
+  padding: 3.5em 2vw 4.5em 2vw;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+}
+
+.testimonial {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.10), 0 2px 8px 0 rgba(56,59,61,0.07);
+  padding: 2.8em 2.5em 2.5em 2.5em;
+  min-width: 340px;
+  max-width: 540px;
+  width: 100%;
+  min-height: 260px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  transition: box-shadow 0.3s, transform 0.4s cubic-bezier(.4,1.3,.7,1.01);
+  margin: 0 1vw;
+  box-sizing: border-box;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+
+.testimonial.active {
+  display: flex;
+  animation: testimonialIn 0.5s cubic-bezier(.4,1.3,.7,1.01);
+}
+
+.testimonial-comment {
+  font-size: 1.25em;
+  color: #232425;
+  margin-bottom: 1.3em;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.testimonial-name {
+  color: #8b8d8f;
+  font-size: 1.08em;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  margin-top: 0.2em;
+}
+
+.testimonial-arrow {
+  background: transparent;
+  border: none;
+  color: #232425;
+  font-size: 1.5em;
+  display: inline;
+  cursor: pointer;
+  transition: color 0.2s;
+  outline: none;
+  user-select: none;
+  position: relative;
+  z-index: 10;
+  font-family: monospace;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+}
+.testimonial-arrow:hover, .testimonial-arrow:focus {
+  color: #0071e3;
+}
+.testimonial-arrow.left {
+  margin-right: 0;
+}
+.testimonial-arrow.right {
+  margin-left: 0;
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.7em;
+  z-index: 2;
+}
+.testimonial-dot {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 50%;
+  background: #f8fafc;
+  transition: background 0.2s, border-color 0.2s;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.testimonial-dot.active {
+  background: #0071e3;
+  border-color: #0071e3;
+}
+
+
+.navigation-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  position: relative;
+  z-index: 10;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 5px 15px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: monospace;
+  font-size: 18px;
+  gap: 20px;
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.9em;
+  z-index: 2;
+}
+
+.dots-separator {
+  color: #232425;
+  font-family: monospace;
+  font-size: 1.5em;
+  letter-spacing: 2px;
+  margin: 0 10px;
+  display: inline-block;
+}
+.testimonial-dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #698a9f;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.testimonial-dot.active {
+  background: #698a9f;
+  border-color: #698a9f;
+}
+@media (max-width: 700px) {
+  .testimonial-carousel {
+    gap: 1vw;
+    padding: 1.3em 0.1em 2.5em 0.1em;
+  }
+  .testimonial {
+    min-width: 0;
+    max-width: 97vw;
+    width: 97vw;
+    padding: 1.1em 0.7em 1.5em 0.7em;
+    max-height: 68vh;
+    overflow-y: auto;
+    margin-bottom: 2.5em;
+  }
+  .testimonial-dots {
+    bottom: 0.5em;
+  }
+  .testimonial-dot {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.testimonial {
+  background: #fff;
+  border-radius: 1.3em;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.08), 0 1.5px 4px 0 rgba(56,59,61,0.09);
+  padding: 2.5em 2.2em 2em 2.2em;
+  min-width: 350px;
+  max-width: 750px;
+  width: 90vw;
+  width: 100%;
+  min-height: 360px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  transition: box-shadow 0.3s, transform 0.4s cubic-bezier(.4,1.3,.7,1.01);
+  margin: 0 1vw;
+  box-sizing: border-box;
+}
+
+.testimonial.active {
+  display: flex;
+  animation: testimonialIn 0.5s cubic-bezier(.4,1.3,.7,1.01);
+}
+@keyframes testimonialIn {
+  0% { opacity: 0; transform: scale(0.97) translateY(24px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.testimonial-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1.3em;
+  border: 3px solid #e0e3e6;
+  box-shadow: 0 2px 8px rgba(56,59,61,0.07);
+}
+.testimonial-comment {
+  font-size: 1.16em;
+  color: #393b3d;
+  margin-bottom: 1.1em;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.testimonial-name {
+  color: #8b8d8f;
+  font-size: 1em;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  margin-top: 0.2em;
+}
+.testimonial-arrow {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(56,59,61,0.09);
+  color: #393b3d;
+  font-size: 2.3em;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  outline: none;
+  user-select: none;
+  position: relative;
+  z-index: 2;
+}
+.testimonial-arrow.left {
+  margin-right: 0;
+}
+.testimonial-arrow.right {
+  margin-left: 0;
+}
+.testimonial-arrow:active,
+.testimonial-arrow:focus {
+  background: #f0f0f2;
+  box-shadow: 0 4px 16px rgba(56,59,61,0.13);
+}
+@media (max-width: 900px) {
+  .testimonial-carousel {
+    max-width: 100vw;
+    padding: 0 1vw;
+  }
+  .testimonial {
+    max-width: 98vw;
+    padding: 1.2em 0.4em 1em 0.4em;
+    min-height: 260px;
+  }
+  .testimonial-img {
+    width: 86px;
+    height: 86px;
+    margin-bottom: 0.7em;
+  }
+  .testimonial-arrow {
+    font-size: 1.5em;
+    width: 34px;
+    height: 34px;
+  }
+}
+@media (max-width: 600px) {
+  .testimonial-carousel {
+    max-width: 100vw;
+    padding: 0 0.5vw;
+  }
+  .testimonial {
+    max-width: 99vw;
+    padding: 1em 0.1em 0.8em 0.1em;
+    min-height: 180px;
+  }
+  .testimonial-img {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 0.5em;
+  }
+  .testimonial-arrow {
+    font-size: 1.2em;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+
 
 /* Page 3 */
 #page3 {
@@ -75,6 +383,270 @@ html, body {
 }
 
 /* ===============================
+   Testimonial Carousel & Controls
+================================= */
+.testimonial-section {
+  padding: 2rem 0;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.testimonial-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: var(--text-color);
+  padding: 0 1rem;
+}
+
+.testimonial-carousel {
+  width: 100%;
+  position: relative;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.testimonial-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.testimonial-arrow:hover {
+  background: #f8f8f8;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+.testimonial-arrow.left {
+  left: 20px;
+}
+
+.testimonial-arrow.right {
+  right: 20px;
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.testimonial-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.testimonial-dot:hover {
+  background: #999;
+}
+
+.testimonial-dot.active {
+  background: #333;
+  transform: scale(1.2);
+}
+
+/* ===============================
+   Testimonial Row (Horizontal Cards)
+================================= */
+.testimonial-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scroll-snap-type: x mandatory;
+  gap: 2.2rem;
+  padding: 1rem 2vw;
+  width: 100%;
+  align-items: stretch;
+  position: relative;
+}
+.testimonial-row::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.testimonial-vertical-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.10), 0 2px 8px 0 rgba(56,59,61,0.07);
+  min-width: 260px;
+  max-width: 320px;
+  width: 300px;
+  flex: 0 0 auto;
+  margin: 0 10px;
+  padding: 2.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  opacity: 1;
+  position: relative;
+}
+.testimonial-vertical-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 36px 0 rgba(0,0,0,0.13), 0 4px 12px 0 rgba(56,59,61,0.10);
+}
+.testimonial-vertical-card .testimonial-name {
+  font-style: italic;
+  color: #8b8d8f;
+  font-size: 0.9rem;
+}
+.testimonial-vertical-card .testimonial-comment {
+  font-size: 1rem;
+  color: #232425;
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+.testimonial-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+  border: 2.5px solid #e0e3e6;
+  box-shadow: 0 2px 8px rgba(56,59,61,0.07);
+  background: #f4f6f8;
+}
+.testimonial-comment {
+  font-size: 1.13em;
+  color: #232425;
+  margin-bottom: 1.1em;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+}
+.testimonial-name {
+  color: #8b8d8f;
+  font-size: 1.04em;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin-top: 0.2em;
+}
+@media (max-width: 700px) {
+  .testimonial-row {
+    gap: 1.2rem;
+    padding: 1.5rem 1vw 1.5rem 1vw;
+  }
+  .testimonial-vertical-card {
+    min-width: 80vw;
+    max-width: 90vw;
+    padding: 1.5rem 0.7rem 1.5rem 0.7rem;
+  }
+  .testimonial-vertical-card .testimonial-comment {
+    font-size: 1rem;
+    color: #232425;
+    margin: 1rem 0;
+    line-height: 1.5;
+  }
+}
+
+/* ===============================
+   Scroll/Swipe Prompt (Page 1)
+================================= */
+.scroll-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgb(57,59,61);
+  font-size: 1.15rem;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  animation: promptFadeIn 1.2s 1.2s both, arrowBounce 1.2s infinite;
+  width: auto;
+}
+
+
+.prompt-arrow {
+  font-size: 2.4em;
+  line-height: 1;
+  color: rgb(57,59,61);
+  display: block;
+  text-align: center;
+  margin: 0;
+}
+.prompt-text {
+  font-size: 1em;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  text-align: center;
+  color: rgb(57,59,61);
+  display: block;
+  margin: 0;
+}
+
+.prompt-arrow {
+  font-size: 2.4em;
+  margin-bottom: 0.1em;
+  animation: arrowBounce 1.2s infinite;
+  line-height: 1;
+}
+.prompt-text {
+  font-size: 1em;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  text-align: center;
+}
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+}
+@keyframes promptFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 768px) {
+  .scroll-prompt {
+    font-size: 1.35rem;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+  }
+  .prompt-arrow {
+    font-size: 3em;
+    text-align: center;
+    margin: 0;
+  }
+  .prompt-text {
+    font-size: 1.18em;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+
+/* ===============================
    Animated Tile (Logo) Styling (Page 1)
    (White box container)
 ================================= */
@@ -86,16 +658,33 @@ html, body {
   animation: slideTile 1s forwards ease-out;
 }
 
+/* --- SVG tile lift effect --- */
+.tile-lift {
+  animation: tileLift 0.4s cubic-bezier(0.4, 0.2, 0.2, 1);
+  /* Will-change for smoother animation on SVG elements */
+  will-change: transform, filter;
+}
+
+@keyframes tileLift {
+  0% {
+    transform: none;
+    filter: none;
+  }
+  80% {
+    transform: translateY(-12px) scale(1.07);
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.5));
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
 @keyframes slideTile {
   0% {
     opacity: 0;
-    transform: translateX(150%) rotate(30deg);
-    filter: drop-shadow(0 15px 10px rgba(0,0,0,0.5));
-  }
-  50% {
-    opacity: 1;
-    transform: translateX(-10px) rotate(-5deg);
-    filter: drop-shadow(0 15px 10px rgba(0,0,0,0.3));
+    transform: translateY(40px) scale(0.85) rotate(-8deg);
+    filter: none;
   }
   100% {
     opacity: 1;
@@ -114,14 +703,16 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: 1;
 }
 
-.wallpaper-container img {
+.wallpaper-container img,
+.wallpaper-container svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   object-fit: cover;
 }
 
@@ -173,14 +764,17 @@ html, body {
    White Box Behind the Logo
 ================================= */
 .logo-container {
+  position: relative;
+  z-index: 10;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  background-color: #fff;
+  /* Removed background-color for transparent background */
   padding: 25px;
   display: inline-block;
+  /* Removed box-shadow for no logo shadow */
 }
 
 /* ===============================

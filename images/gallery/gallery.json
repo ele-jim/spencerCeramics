@@ -98,29 +98,64 @@
   ],
   "testimonials": [
     {
+      "quote": "The attention to detail and craftsmanship is simply world-class. My kitchen has never looked so refined.",
+      "author": "Ava Thompson",
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
+    },
+    {
+      "quote": "From start to finish, the process was seamless. The result is elegant and timeless—truly transformative.",
+      "author": "Lucas Chen",
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
+    },
+    {
+      "quote": "Every tile is perfectly placed. It’s the kind of quality you expect from a premium brand.",
+      "author": "Isabella Rossi",
+      "rating": 4.5,
+      "img": "images/icons/profile-placeholder.svg"
+    },
+    {
+      "quote": "Professional, courteous, and the final look is stunning. The space feels like it belongs in a design magazine.",
+      "author": "Oliver Smith",
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
+    },
+    {
+      "quote": "Impeccable work and a beautiful finish. It’s the little details that make all the difference.",
+      "author": "Sophia Lee",
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
+    },
+    {
       "quote": "Amazing service, I would happily let him grout my cracks anytime!",
       "author": "Janet Taylor",
-      "rating": 5
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
     },
     {
       "quote": "Exceeded all my expectations, leaves me happy everytime!",
       "author": "Sarah Johnson",
-      "rating": 4.5
+      "rating": 4.5,
+      "img": "images/icons/profile-placeholder.svg"
     },
     {
       "quote": "Transformed our space completely. My wife wont stop talking about how amazing he is.",
       "author": "Michael Brown",
-      "rating": 5
+      "rating": 5,
+      "img": "images/icons/profile-placeholder.svg"
     },
     {
       "quote": "Lee’s the only man I’d trust to handle my backsplash. Perfect from top to bottom.",
       "author": "Emma Davis",
-      "rating": 4
+      "rating": 4,
+      "img": "images/icons/profile-placeholder.svg"
     },
     {
       "quote": "Lee knows how to lay it down perfectly. My tiles have never felt so good!.",
       "author": "Rebecca Wilson",
-      "rating": 4.5
+      "rating": 4.5,
+      "img": "images/icons/profile-placeholder.svg"
     }
   ]
 }
